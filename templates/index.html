@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iris Flower Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Iris Flower Prediction</h2>
+        
+        <!-- Prediction Form -->
+        <form id="predictionForm">
+            <label>Select Model:</label>
+            <select name="model" id="modelSelect" required>
+                <option value="" selected disabled>Select Model</option>
+                {% for model in models %}
+                <option value="{{ model }}">{{ model }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Sepal Length:</label>
+            <input type="text" name="sepal_length" id="sepal_length" required>
+
+            <label>Sepal Width:</label>
+            <input type="text" name="sepal_width" id="sepal_width" required>
+
+            <label>Petal Length:</label>
+            <input type="text" name="petal_length" id="petal_length" required>
+
+            <label>Petal Width:</label>
+            <input type="text" name="petal_width" id="petal_width" required>
+
+            <div class="button-container">
+                <button type="submit">Predict</button>
+                <button type="button" id="resetBtn">Reset</button>
+            </div>
+        </form>
+
+        <!-- Prediction Result -->
+        <div id="result" class="result" style="display: none;">
+            <h3>Prediction: <span id="predictionText"></span></h3>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("predictionForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            let formData = new FormData(this);
+
+            fetch("/predict", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.prediction) {
+                    document.getElementById("predictionText").innerText = data.prediction;
+                    document.getElementById("result").style.display = "block";
+                } else {
+                    alert("Error: " + data.error);
+                }
+            })
+            .catch(error => console.error("Error:", error));
+        });
+
+        document.getElementById("resetBtn").addEventListener("click", function() {
+            document.getElementById("predictionForm").reset();
+            document.getElementById("result").style.display = "none";
+        });
+    </script>
+</body>
+</html>
