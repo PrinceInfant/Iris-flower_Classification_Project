@@ -1,8 +1,7 @@
 
 
-This file contains the required Python libraries for running the project.
+#This file contains the required Python libraries for running the project.
 
-```text
 pandas
 numpy
 seaborn
